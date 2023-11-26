@@ -1,0 +1,38 @@
+{
+  "name": "yt-discord",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "bin": "dist/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "ts-node --esm src/index.ts"
+  },
+  "author": "daysling",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@dank074/discord-video-stream": "^3.0.2",
+    "discord.js-selfbot-v13": "^2.15.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "ytdl-core": "^4.11.5"
+  },
+  "devDependencies": {
+    "dotenv": "^16.3.1",
+    "javascript-obfuscator": "^4.1.0",
+    "prettier": "^3.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "pkg": {
+    "scripts": [
+      "dist/**/*.js"
+    ],
+    "assets": [
+      "videos/**/*"
+    ],
+    "targets": [
+      "node18-linux"
+    ],
+    "outputPath": "dist-bin"
+  }
+}
