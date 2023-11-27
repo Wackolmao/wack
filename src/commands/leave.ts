@@ -2,6 +2,8 @@ import { Command } from "../objects/Command";
 import { Message } from "discord.js-selfbot-v13";
 import { Streamer } from "@dank074/discord-video-stream";
 import Global from "../registries/Global";
+// Import MediaUdp if it's a part of an external library or your project
+// import { MediaUdp } from 'path-to-the-mediaudp-definition';
 
 export default class LeaveCommand implements Command {
   name = "leave";
@@ -26,9 +28,12 @@ export default class LeaveCommand implements Command {
 
     // Stop any ongoing streaming or media playback
     if (Global.stream) {
-      let stream = Global.stream as MediaUdp;
-      stream.mediaConnection.setSpeaking(false);
-      stream.mediaConnection.setVideoStatus(false);
+      // Assuming MediaUdp is correctly imported and used
+      let stream = Global.stream as any; // Use 'any' if the exact type is unknown
+      if(stream.mediaConnection) {
+        stream.mediaConnection.setSpeaking(false);
+        stream.mediaConnection.setVideoStatus(false);
+      }
       stream.stop();
       Global.stream = null;
     }
