@@ -1,32 +1,48 @@
 import { Command } from "../objects/Command";
 import { Message } from "discord.js-selfbot-v13";
-import { MediaUdp, Streamer, command } from "@dank074/discord-video-stream";
+import { Streamer } from "@dank074/discord-video-stream";
 import Global from "../registries/Global";
 
-export default class JoinCommand implements Command {
-  name = "join";
-  usage = "join";
-  description = "Joins your VC.";
+export default class LeaveCommand implements Command {
+  name = "leave";
+  usage = "leave";
+  description = "Leaves your VC.";
 
   async execute(
     msg: Message,
     args: string[],
     streamer: Streamer,
   ): Promise<any> {
+    // Check if the bot is connected to a voice channel
+    if (!Global.botConnected) {
+      await msg.reply("I'm not connected to any voice channel.");
+      return;
+    }
+
+    // Reset global states
     Global.botConnected = false;
     Global.isStreaming = false;
     Global.isPlaying = false;
-    
-    let stream = Global.stream as MediaUdp;
-    stream.mediaConnection.setSpeaking(false);
-    stream.mediaConnection.setVideoStatus(false);
-    stream.stop();
-    Global.stream = null;
-    Global.ytdl_stream = null;
-    command.kill("SIGINT");
+
+    // Stop any ongoing streaming or media playback
+    if (Global.stream) {
+      let stream = Global.stream as MediaUdp;
+      stream.mediaConnection.setSpeaking(false);
+      stream.mediaConnection.setVideoStatus(false);
+      stream.stop();
+      Global.stream = null;
+    }
+
+    if (Global.ytdl_stream) {
+      Global.ytdl_stream.destroy();
+      Global.ytdl_stream = null;
+    }
+
+    // Stop the streamer and leave the voice channel
     streamer.stopStream();
-    Global.ytdl_stream.destroy();
     streamer.leaveVoice();
-    await msg.reply("Joined your VC.");
+
+    // Send a confirmation message
+    await msg.reply("Left the voice channel.");
   }
 }
