@@ -25,12 +25,14 @@ setStreamOpts({
   fps: 30,
 });
 
-["join", "play", "queue", "skip"].forEach(async (file) => {
+// Registering commands
+["join", "play", "queue", "skip", "leave"].forEach(async (file) => {
   const command = require(`./commands/${file}`);
   // create new instance of command and register it
   Registry.registerCommand(new command.default());
 });
 
+// Registering events
 ["MessageCreate", "Ready", "VoiceStateUpdateListener"].forEach(async (file) => {
   const event = require(`./events/${file}`);
   const listener: BEvent<keyof ClientEvents> = new event.default();
@@ -43,11 +45,13 @@ setStreamOpts({
       );
 });
 
+// Registering intervals
 ["QueueChecker"].forEach(async (file) => {
   const interval = await require(`./intervals/${file}`);
   setInterval(() => interval.default.execute(streamer), interval.default.time);
 });
 
+// Error handling
 process.on("uncaughtException", (err) => {
   console.error(err);
   // process.exit(1);
@@ -58,4 +62,5 @@ process.on("unhandledRejection", (err) => {
   // process.exit(1);
 });
 
+// Bot login
 streamer.client.login(process.env.TOKEN);
